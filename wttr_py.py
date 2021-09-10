@@ -1,3 +1,5 @@
+from tkinter import *
+from tkinter import messagebox
 import urllib.request
 import json
 from urllib.request import urlopen, Request
@@ -6,47 +8,92 @@ from tkinter import *
 
 
 
-urlData = "https://wttr.in/Detroit?format=j1"
-webURL = urllib.request.urlopen(urlData)
-data = webURL.read()
 
-encoding = webURL.info().get_content_charset('utf-8')
-j = json.loads(data.decode(encoding))
+def buttonBerechnenClick():
+   # try:
+        #data
+        city = City.get()
+        
+        
+        
+   
 
-#Information
-LOC = (j["nearest_area"][0]["areaName"][0]["value"])
-VIS = (j["weather"][0]["hourly"][0]["visibilityMiles"] + " Miles")
-SUN = (j["weather"][0]["astronomy"][0]["sunrise"])
-CLOUD = (j["current_condition"][0]["cloudcover"])
-CHS = (j["weather"][0]["hourly"][0]["chanceofsnow"])
+        city = city.replace("ü", "ue")
 
+        city = city.replace("ä", "ae")
 
-def fact (DEFAUL):
-
-    TEMPLATE ="{:17}".format("| Location: ") + "{:<17}".format("| " +  DEFAUL) + ("|")
-    return TEMPLATE
+        city = city.replace("ö", "oe")
 
 
-
-
-#formatting
-LOC_format = fact(LOC)
-VIS_format = fact(VIS + " Miles")
-SUN_format = fact(SUN + " AM")
-CLOUD_format = fact(CLOUD + " %")
-CHS_format = fact(CHS + " %")
+        
+   
 
 
 
-#format lines
-line ="-----------------------------------"
+        urlData = "https://wttr.in/" + city + "?format=j1"
+        webURL = urllib.request.urlopen(urlData)
+        data = webURL.read()
 
-#Printing area
+        encoding = webURL.info().get_content_charset('utf-8')
+        j = json.loads(data.decode(encoding))
 
-print(line)
-print(LOC_format)
-print(SUN_format)
-print(VIS_format)
-print(CLOUD_format)
-print(CHS_format)
-print(line)
+        #Information
+        LOC = (j["nearest_area"][0]["areaName"][0]["value"])
+        VIS = (j["weather"][0]["hourly"][0]["visibilityMiles"] + " Miles")
+        SUN = (j["weather"][0]["astronomy"][0]["sunrise"])
+        CLOUD = (j["current_condition"][0]["cloudcover"])
+        CHS = (j["weather"][0]["hourly"][0]["chanceofsnow"])
+
+
+        def fact (DEFAUL, NAME):
+
+            TEMPLATE ="{:17}".format("| " + NAME) + "{:<17}".format("| " +  DEFAUL) + ("|")
+            return TEMPLATE
+
+
+
+
+        #formatting
+        LOC_format = fact(LOC, "Location:")
+        VIS_format = fact(VIS + " Miles" , "Visibility:")
+        SUN_format = fact(SUN + " AM", "Sunrise:")
+        CLOUD_format = fact(CLOUD + " %", "Cloudly:")
+        CHS_format = fact(CHS + " %", "Chance of Snow:")
+
+
+
+        #format lines
+        line ="-----------------------------------"
+
+        #Printing area
+
+        print(line)
+        print(LOC_format)
+        print(SUN_format)
+        print(VIS_format)
+        print(CLOUD_format)
+        print(CHS_format)
+        print(line)
+
+   # except:
+      #  messagebox.showerror('Error', 'Invalid Input')
+
+
+
+# Fenster
+tkFenster = Tk()
+tkFenster.title('wttr')
+tkFenster.geometry('258x195')
+# Label mit Aufschrift Gewicht
+labelGewicht = Label(master=tkFenster, bg='#FFCFC9', text='Enter you Location:')
+labelGewicht.place(x=54, y=24, width=100, height=27)
+# Entry für das Gewicht
+City = Entry(master=tkFenster, bg='white')
+City.place(x=164, y=24, width=40, height=27)
+
+buttonBerechnen = Button(master=tkFenster, bg='#FBD975', text='Start',
+                         command=buttonBerechnenClick)
+buttonBerechnen.place(x=54, y=104, width=100, height=27)
+
+# Aktivierung des Fensters
+tkFenster.mainloop()
